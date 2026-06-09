@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Artvision sarl</title>
+  <style>
+    :root {
+      --ink: #1b1f24;
+      --muted: #64707d;
+      --line: #d9e0e7;
+      --soft: #f5f7fa;
+      --panel: #ffffff;
+      --income: #147d58;
+      --expense: #b73b30;
+      --accent: #285f9f;
+      --accent-soft: #e8f1fb;
+      --warn-soft: #fff2dc;
+      --shadow: 0 12px 28px rgba(26, 36, 48, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background: #eef2f6;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    .app.locked {
+      display: none;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: #eef2f6;
+    }
+
+    .login-screen.hidden {
+      display: none;
+    }
+
+    .login-card {
+      width: min(430px, 100%);
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+      display: grid;
+      gap: 15px;
+    }
+
+    .login-card h1 {
+      font-size: 24px;
+    }
+
+    .login-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .login-help {
+      color: var(--muted);
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .login-error {
+      color: var(--expense);
+      min-height: 18px;
+      font-size: 13px;
+    }
+
+    aside {
+      background: #172331;
+      color: white;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .brand strong {
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      color: #b8c7d9;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .shop-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .shop-button {
+      width: 100%;
+      color: #dce8f5;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .shop-button.active {
+      color: #102033;
+      background: #ffffff;
+    }
+
+    .shop-button small {
+      color: inherit;
+      opacity: .72;
+      line-height: 1.35;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .side-actions {
+      display: grid;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .ghost-button {
+      color: #eef5fd;
+      background: rgba(255, 255, 255, .09);
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 8px;
+      padding: 11px 12px;
+      text-align: center;
+    }
+
+    .user-box {
+      color: #d7e6f7;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 8px;
+      padding: 12px;
+      display: grid;
+      gap: 4px;
+      font-size: 13px;
+    }
+
+    .user-box strong {
+      color: white;
+      font-size: 15px;
+    }
+
+    main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      color: var(--ink);
+      padding: 10px 11px;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 42px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(40, 95, 159, .13);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: var(--shadow);
+      min-height: 104px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .metric strong {
+      font-size: 24px;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .metric.income strong { color: var(--income); }
+    .metric.expense strong { color: var(--expense); }
+    .metric.net.negative strong { color: var(--expense); }
+    .metric.net.positive strong { color: var(--income); }
+
+    .metric small {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(320px, 390px) 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 15px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 8px;
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tab {
+      border-radius: 7px;
+      padding: 10px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .tab.active {
+      color: var(--accent);
+      background: white;
+      box-shadow: 0 1px 4px rgba(16, 28, 40, .08);
+    }
+
+    form {
+      padding: 15px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .primary-button {
+      color: white;
+      background: var(--accent);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-weight: 700;
+    }
+
+    .primary-button:hover, .ghost-button:hover, .shop-button:hover {
+      filter: brightness(.98);
+    }
+
+    .table-wrap {
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--muted);
+      background: var(--soft);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .amount-income { color: var(--income); font-weight: 700; }
+    .amount-expense { color: var(--expense); font-weight: 700; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pill.income {
+      color: var(--income);
+      background: #e6f5ee;
+    }
+
+    .pill.expense {
+      color: var(--expense);
+      background: #fde9e6;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      color: var(--expense);
+      background: #fff0ee;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .empty {
+      padding: 28px 16px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .notice {
+      padding: 12px 15px;
+      color: #76520e;
+      background: var(--warn-soft);
+      border-bottom: 1px solid #f3d9a7;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1050px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+      }
+
+      .workspace, .summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding: 16px;
+      }
+
+      .topbar, .filters {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .summary-grid, .workspace, .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="login-screen" id="loginScreen">
+    <form class="login-card" id="loginForm">
+      <div>
+        <h1>Connexion</h1>
+        <p>Chaque utilisateur voit uniquement le rapport autorisé pour son compte.</p>
+      </div>
+      <div class="field">
+        <label for="usernameInput">Utilisateur</label>
+        <input id="usernameInput" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="passwordInput">Mot de passe</label>
+        <input id="passwordInput" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="primary-button" type="submit">Se connecter</button>
+      <div class="login-error" id="loginError"></div>
+      <div class="login-help">
+        Comptes de test : admin/admin123, papeterie/papier123, aluminium/alu123, imprimerie/print123, electronique/elec123, light/light123.
+      </div>
+    </form>
+  </section>
+
+  <div class="app locked" id="appShell">
+    <aside>
+      <div class="brand">
+        <strong>Artvision sarl</strong>
+        <span>Suivi simple des recettes, dépenses et bénéfices par jour.</span>
+      </div>
+
+      <div class="user-box">
+        <span>Connecté</span>
+        <strong id="userNameLabel">Utilisateur</strong>
+        <span id="userRoleLabel">Rapport boutique</span>
+      </div>
+
+      <div class="shop-list" id="shopList"></div>
+
+      <div class="side-actions">
+        <button class="ghost-button" id="exportButton" type="button">Exporter CSV</button>
+        <button class="ghost-button" id="resetDemoButton" type="button">Remettre les exemples</button>
+        <button class="ghost-button" id="logoutButton" type="button">Se déconnecter</button>
+      </div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div>
+          <h1 id="pageTitle">Tableau de bord</h1>
+        </div>
+        <div class="filters">
+          <div class="field">
+            <label for="dayFilter">Jour</label>
+            <input id="dayFilter" type="date">
+          </div>
+          <div class="field">
+            <label for="periodFilter">Vue</label>
+            <select id="periodFilter">
+              <option value="day">Jour choisi</option>
+              <option value="month">Mois du jour choisi</option>
+              <option value="all">Tout l'historique</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <section class="summary-grid" aria-label="Résumé">
+        <div class="metric income">
+          <span>Entrées CDF</span>
+          <strong id="incomeCdfTotal">0 CDF</strong>
+        </div>
+        <div class="metric expense">
+          <span>Dépenses CDF</span>
+          <strong id="expenseCdfTotal">0 CDF</strong>
+        </div>
+        <div class="metric net" id="netCdfMetric">
+          <span>Bénéfice CDF</span>
+          <strong id="netCdfTotal">0 CDF</strong>
+        </div>
+        <div class="metric">
+          <span>Opérations</span>
+          <strong id="countTotal">0</strong>
+        </div>
+        <div class="metric income">
+          <span>Entrées USD</span>
+          <strong id="incomeUsdTotal">0 USD</strong>
+        </div>
+        <div class="metric expense">
+          <span>Dépenses USD</span>
+          <strong id="expenseUsdTotal">0 USD</strong>
+        </div>
+        <div class="metric net" id="netUsdMetric">
+          <span>Bénéfice USD</span>
+          <strong id="netUsdTotal">0 USD</strong>
+        </div>
+        <div class="metric">
+          <span>Devises</span>
+          <strong>CDF / USD</strong>
+          <small>Les totaux restent séparés.</small>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <div class="panel">
+          <div class="tabs" role="tablist" aria-label="Type d'opération">
+            <button class="tab active" id="incomeTab" type="button">Entrée</button>
+            <button class="tab" id="expenseTab" type="button">Dépense</button>
+          </div>
+          <form id="entryForm">
+            <div class="form-row">
+              <div class="field">
+                <label for="shopInput">Boutique</label>
+                <select id="shopInput" required></select>
+              </div>
+              <div class="field">
+                <label for="dateInput">Date</label>
+                <input id="dateInput" type="date" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="amountInput">Montant</label>
+                <input id="amountInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ex: 25000" required>
+              </div>
+              <div class="field">
+                <label for="currencyInput">Devise</label>
+                <select id="currencyInput" required>
+                  <option value="CDF">CDF</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="categoryInput">Catégorie</label>
+              <input id="categoryInput" list="categoryList" placeholder="Ex: ventes, loyer, transport" required>
+              <datalist id="categoryList"></datalist>
+            </div>
+            <div class="field">
+              <label for="noteInput">Note</label>
+              <textarea id="noteInput" placeholder="Détail facultatif"></textarea>
+            </div>
+            <button class="primary-button" id="submitButton" type="submit">Ajouter l'entrée</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="notice">Les données restent enregistrées dans ce navigateur. Pense à exporter le CSV régulièrement pour garder une copie.</div>
+          <div class="panel-header">
+            <h2>Historique</h2>
+            <span id="historyLabel"></span>
+          </div>
+          <div class="table-wrap" id="historyContainer"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "boutique-manager-v1";
+    const SESSION_KEY = "boutique-manager-session-v1";
+    const shops = [
+      "Papeterie et objet personnalisable",
+      "Accessoire aluminium",
+      "Imprimerie",
+      "Electronique et accessoire",
+      "Light Led"
+    ];
+    const users = [
+      { username: "admin", password: "admin123", name: "Administrateur", role: "admin", shop: "all" },
+      { username: "papeterie", password: "papier123", name: "Papeterie", role: "shop", shop: "Papeterie et objet personnalisable" },
+      { username: "aluminium", password: "alu123", name: "Accessoire aluminium", role: "shop", shop: "Accessoire aluminium" },
+      { username: "imprimerie", password: "print123", name: "Imprimerie", role: "shop", shop: "Imprimerie" },
+      { username: "electronique", password: "elec123", name: "Electronique et accessoire", role: "shop", shop: "Electronique et accessoire" },
+      { username: "light", password: "light123", name: "Light Led", role: "shop", shop: "Light Led" }
+    ];
+    const incomeCategories = ["Ventes", "Commande", "Autre entree"];
+    const expenseCategories = ["Achat stock", "Loyer", "Salaire", "Transport", "Electricite", "Autre depense"];
+
+    const today = new Date().toISOString().slice(0, 10);
+    let selectedShop = "all";
+    let activeType = "income";
+    let records = loadRecords();
+    let currentUser = loadSession();
+
+    const loginScreen = document.getElementById("loginScreen");
+    const appShell = document.getElementById("appShell");
+    const loginForm = document.getElementById("loginForm");
+    const loginError = document.getElementById("loginError");
+    const userNameLabel = document.getElementById("userNameLabel");
+    const userRoleLabel = document.getElementById("userRoleLabel");
+    const shopList = document.getElementById("shopList");
+    const shopInput = document.getElementById("shopInput");
+    const dayFilter = document.getElementById("dayFilter");
+    const periodFilter = document.getElementById("periodFilter");
+    const pageTitle = document.getElementById("pageTitle");
+    const incomeCdfTotal = document.getElementById("incomeCdfTotal");
+    const expenseCdfTotal = document.getElementById("expenseCdfTotal");
+    const netCdfTotal = document.getElementById("netCdfTotal");
+    const netCdfMetric = document.getElementById("netCdfMetric");
+    const incomeUsdTotal = document.getElementById("incomeUsdTotal");
+    const expenseUsdTotal = document.getElementById("expenseUsdTotal");
+    const netUsdTotal = document.getElementById("netUsdTotal");
+    const netUsdMetric = document.getElementById("netUsdMetric");
+    const countTotal = document.getElementById("countTotal");
+    const incomeTab = document.getElementById("incomeTab");
+    const expenseTab = document.getElementById("expenseTab");
+    const submitButton = document.getElementById("submitButton");
+    const categoryInput = document.getElementById("categoryInput");
+    const categoryList = document.getElementById("categoryList");
+    const entryForm = document.getElementById("entryForm");
+    const historyContainer = document.getElementById("historyContainer");
+    const historyLabel = document.getElementById("historyLabel");
+    const exportButton = document.getElementById("exportButton");
+    const resetDemoButton = document.getElementById("resetDemoButton");
+    const logoutButton = document.getElementById("logoutButton");
+
+    dayFilter.value = today;
+    document.getElementById("dateInput").value = today;
+
+    renderStaticControls();
+    saveRecords();
+    setActiveType("income");
+    applySession();
+
+    function loadSession() {
+      const username = sessionStorage.getItem(SESSION_KEY);
+      return users.find(user => user.username === username) || null;
+    }
+
+    function saveSession(user) {
+      sessionStorage.setItem(SESSION_KEY, user.username);
+    }
+
+    function applySession() {
+      if (!currentUser) {
+        appShell.classList.add("locked");
+        loginScreen.classList.remove("hidden");
+        return;
+      }
+
+      loginScreen.classList.add("hidden");
+      appShell.classList.remove("locked");
+      selectedShop = currentUser.role === "admin" ? selectedShop : currentUser.shop;
+      shopInput.value = currentUser.role === "admin" ? shopInput.value : currentUser.shop;
+      shopInput.disabled = currentUser.role !== "admin";
+      resetDemoButton.style.display = currentUser.role === "admin" ? "" : "none";
+      userNameLabel.textContent = currentUser.name;
+      userRoleLabel.textContent = currentUser.role === "admin" ? "Tous les rapports" : currentUser.shop;
+      render();
+    }
+
+    function loadRecords() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          return JSON.parse(saved).map(normalizeRecord);
+        } catch (error) {
+          return [];
+        }
+      }
+
+      return [
+        { id: crypto.randomUUID(), shop: "Papeterie et objet personnalisable", type: "income", amount: 85000, currency: "CDF", category: "Ventes", note: "Journee normale", date: today },
+        { id: crypto.randomUUID(), shop: "Papeterie et objet personnalisable", type: "expense", amount: 18000, currency: "CDF", category: "Achat stock", note: "Reassort", date: today },
+        { id: crypto.randomUUID(), shop: "Accessoire aluminium", type: "income", amount: 35, currency: "USD", category: "Ventes", note: "", date: today },
+        { id: crypto.randomUUID(), shop: "Imprimerie", type: "expense", amount: 7000, currency: "CDF", category: "Transport", note: "Livraison", date: today },
+        { id: crypto.randomUUID(), shop: "Electronique et accessoire", type: "income", amount: 52, currency: "USD", category: "Ventes", note: "Exemple", date: today },
+        { id: crypto.randomUUID(), shop: "Light Led", type: "income", amount: 42000, currency: "CDF", category: "Ventes", note: "Exemple", date: today }
+      ];
+    }
+
+    function normalizeRecord(record) {
+      const shopMap = {
+        "Boutique 1": "Papeterie et objet personnalisable",
+        "Boutique 2": "Accessoire aluminium",
+        "Boutique 3": "Imprimerie"
+      };
+
+      return {
+        ...record,
+        shop: shopMap[record.shop] || record.shop,
+        currency: record.currency || "CDF"
+      };
+    }
+
+    function saveRecords() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function renderStaticControls() {
+      const allButton = createShopButton("all", "Toutes les boutiques");
+      shopList.appendChild(allButton);
+
+      shops.forEach(shop => {
+        shopList.appendChild(createShopButton(shop, shop));
+        const option = document.createElement("option");
+        option.value = shop;
+        option.textContent = shop;
+        shopInput.appendChild(option);
+      });
+    }
+
+    function createShopButton(value, label) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "shop-button";
+      button.dataset.shop = value;
+      button.innerHTML = `<span>${label}</span><small>CDF 0<br>USD 0</small>`;
+      button.addEventListener("click", () => {
+        if (currentUser && currentUser.role !== "admin" && value !== currentUser.shop) return;
+        selectedShop = value;
+        render();
+      });
+      return button;
+    }
+
+    function setActiveType(type) {
+      activeType = type;
+      incomeTab.classList.toggle("active", type === "income");
+      expenseTab.classList.toggle("active", type === "expense");
+      submitButton.textContent = type === "income" ? "Ajouter l'entrée" : "Ajouter la dépense";
+      categoryInput.value = "";
+      categoryList.innerHTML = "";
+      const categories = type === "income" ? incomeCategories : expenseCategories;
+      categories.forEach(category => {
+        const option = document.createElement("option");
+        option.value = category;
+        categoryList.appendChild(option);
+      });
+    }
+
+    function getFilteredRecords() {
+      const day = dayFilter.value || today;
+      const period = periodFilter.value;
+      const allowedShop = currentUser && currentUser.role !== "admin" ? currentUser.shop : selectedShop;
+      return records.filter(record => {
+        const shopMatches = allowedShop === "all" || record.shop === allowedShop;
+        if (!shopMatches) return false;
+        if (period === "all") return true;
+        if (period === "month") return record.date.slice(0, 7) === day.slice(0, 7);
+        return record.date === day;
+      }).sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+    }
+
+    function render() {
+      const filtered = getFilteredRecords();
+      const incomeCdf = sumByTypeCurrency(filtered, "income", "CDF");
+      const expenseCdf = sumByTypeCurrency(filtered, "expense", "CDF");
+      const netCdf = incomeCdf - expenseCdf;
+      const incomeUsd = sumByTypeCurrency(filtered, "income", "USD");
+      const expenseUsd = sumByTypeCurrency(filtered, "expense", "USD");
+      const netUsd = incomeUsd - expenseUsd;
+
+      const visibleShop = currentUser && currentUser.role !== "admin" ? currentUser.shop : selectedShop;
+      pageTitle.textContent = visibleShop === "all" ? "Tableau de bord" : visibleShop;
+      incomeCdfTotal.textContent = formatMoney(incomeCdf, "CDF");
+      expenseCdfTotal.textContent = formatMoney(expenseCdf, "CDF");
+      netCdfTotal.textContent = formatMoney(netCdf, "CDF");
+      incomeUsdTotal.textContent = formatMoney(incomeUsd, "USD");
+      expenseUsdTotal.textContent = formatMoney(expenseUsd, "USD");
+      netUsdTotal.textContent = formatMoney(netUsd, "USD");
+      countTotal.textContent = String(filtered.length);
+      netCdfMetric.classList.toggle("positive", netCdf >= 0);
+      netCdfMetric.classList.toggle("negative", netCdf < 0);
+      netUsdMetric.classList.toggle("positive", netUsd >= 0);
+      netUsdMetric.classList.toggle("negative", netUsd < 0);
+      historyLabel.textContent = periodLabel();
+
+      document.querySelectorAll(".shop-button").forEach(button => {
+        const shop = button.dataset.shop;
+        const allowed = !currentUser || currentUser.role === "admin" || shop === currentUser.shop;
+        button.style.display = allowed ? "" : "none";
+        button.classList.toggle("active", shop === visibleShop);
+        const relevant = records.filter(record => shop === "all" || record.shop === shop);
+        const shopNetCdf = sumByTypeCurrency(relevant, "income", "CDF") - sumByTypeCurrency(relevant, "expense", "CDF");
+        const shopNetUsd = sumByTypeCurrency(relevant, "income", "USD") - sumByTypeCurrency(relevant, "expense", "USD");
+        button.querySelector("small").innerHTML = `${formatMoney(shopNetCdf, "CDF")}<br>${formatMoney(shopNetUsd, "USD")}`;
+      });
+
+      renderHistory(filtered);
+    }
+
+    function renderHistory(items) {
+      if (!items.length) {
+        historyContainer.innerHTML = `<div class="empty">Aucune opération pour cette sélection.</div>`;
+        return;
+      }
+
+      const rows = items.map(record => {
+        const typeLabel = record.type === "income" ? "Entrée" : "Dépense";
+        const amountClass = record.type === "income" ? "amount-income" : "amount-expense";
+        const pillClass = record.type === "income" ? "income" : "expense";
+        return `
+          <tr>
+            <td>${escapeHtml(formatDate(record.date))}</td>
+            <td>${escapeHtml(record.shop)}</td>
+            <td><span class="pill ${pillClass}">${typeLabel}</span></td>
+            <td>${escapeHtml(record.category)}</td>
+            <td class="${amountClass}">${escapeHtml(formatMoney(record.amount, record.currency || "CDF"))}</td>
+            <td>${escapeHtml(record.currency || "CDF")}</td>
+            <td>${escapeHtml(record.note || "")}</td>
+            <td><button class="icon-button" type="button" title="Supprimer" data-delete="${record.id}">X</button></td>
+          </tr>
+        `;
+      }).join("");
+
+      historyContainer.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Boutique</th>
+              <th>Type</th>
+              <th>Catégorie</th>
+              <th>Montant</th>
+              <th>Devise</th>
+              <th>Note</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+
+      historyContainer.querySelectorAll("[data-delete]").forEach(button => {
+        button.addEventListener("click", () => {
+          records = records.filter(record => record.id !== button.dataset.delete);
+          saveRecords();
+          render();
+        });
+      });
+    }
+
+    function sumByType(items, type) {
+      return items
+        .filter(record => record.type === type)
+        .reduce((total, record) => total + Number(record.amount || 0), 0);
+    }
+
+    function sumByTypeCurrency(items, type, currency) {
+      return items
+        .filter(record => record.type === type && (record.currency || "CDF") === currency)
+        .reduce((total, record) => total + Number(record.amount || 0), 0);
+    }
+
+    function periodLabel() {
+      if (periodFilter.value === "all") return "Tout l'historique";
+      if (periodFilter.value === "month") return "Mois de " + monthName(dayFilter.value);
+      return formatDate(dayFilter.value);
+    }
+
+    function monthName(dateValue) {
+      const date = new Date(dateValue + "T00:00:00");
+      return date.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+    }
+
+    function formatDate(dateValue) {
+      const date = new Date(dateValue + "T00:00:00");
+      return date.toLocaleDateString("fr-FR");
+    }
+
+    function formatMoney(value, currency) {
+      const amount = Number(value || 0);
+      if (currency === "USD") {
+        return new Intl.NumberFormat("fr-FR", {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: amount % 1 === 0 ? 0 : 2,
+          maximumFractionDigits: 2
+        }).format(amount);
+      }
+
+      return new Intl.NumberFormat("fr-FR", {
+        maximumFractionDigits: 0
+      }).format(amount) + " CDF";
+    }
+
+    function exportCsv() {
+      const header = ["date", "boutique", "type", "categorie", "montant", "devise", "note"];
+      const lines = getFilteredRecords().map(record => [
+        record.date,
+        record.shop,
+        record.type === "income" ? "entree" : "depense",
+        record.category,
+        record.amount,
+        record.currency || "CDF",
+        record.note || ""
+      ].map(csvCell).join(","));
+      const csv = [header.join(","), ...lines].join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "gestion-boutiques.csv";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function csvCell(value) {
+      return `"${String(value).replaceAll('"', '""')}"`;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[character]));
+    }
+
+    incomeTab.addEventListener("click", () => setActiveType("income"));
+    expenseTab.addEventListener("click", () => setActiveType("expense"));
+    dayFilter.addEventListener("input", render);
+    periodFilter.addEventListener("change", render);
+    exportButton.addEventListener("click", exportCsv);
+
+    loginForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const username = document.getElementById("usernameInput").value.trim().toLowerCase();
+      const password = document.getElementById("passwordInput").value;
+      const user = users.find(item => item.username === username && item.password === password);
+
+      if (!user) {
+        loginError.textContent = "Utilisateur ou mot de passe incorrect.";
+        return;
+      }
+
+      currentUser = user;
+      saveSession(user);
+      loginError.textContent = "";
+      loginForm.reset();
+      selectedShop = user.role === "admin" ? "all" : user.shop;
+      applySession();
+    });
+
+    logoutButton.addEventListener("click", () => {
+      sessionStorage.removeItem(SESSION_KEY);
+      currentUser = null;
+      applySession();
+    });
+
+    resetDemoButton.addEventListener("click", () => {
+      const confirmed = confirm("Remettre les exemples va remplacer les données enregistrées dans ce navigateur. Continuer ?");
+      if (!confirmed) return;
+      localStorage.removeItem(STORAGE_KEY);
+      records = loadRecords();
+      saveRecords();
+      render();
+    });
+
+    entryForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const amount = Number(document.getElementById("amountInput").value);
+      if (!amount || amount <= 0) return;
+
+      records.push({
+        id: crypto.randomUUID(),
+        shop: currentUser && currentUser.role !== "admin" ? currentUser.shop : shopInput.value,
+        type: activeType,
+        amount,
+        currency: document.getElementById("currencyInput").value,
+        category: categoryInput.value.trim(),
+        note: document.getElementById("noteInput").value.trim(),
+        date: document.getElementById("dateInput").value
+      });
+
+      saveRecords();
+      entryForm.reset();
+      document.getElementById("dateInput").value = dayFilter.value || today;
+      if (currentUser && currentUser.role !== "admin") {
+        shopInput.value = currentUser.shop;
+      }
+      document.getElementById("currencyInput").value = "CDF";
+      render();
+    });
+  </script>
+</body>
+</html>
